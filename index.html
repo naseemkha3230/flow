@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlowAI - AI Video Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-film"></i>
+                <h1>FlowAI</h1>
+                <span class="beta-tag">BETA</span>
+            </div>
+            <p class="tagline">Transform images into cinematic videos with AI</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Panel - Input Controls -->
+            <div class="control-panel">
+                <!-- Image Upload Section -->
+                <section class="upload-section">
+                    <h2><i class="fas fa-images"></i> Upload Images</h2>
+                    <div class="upload-zone" id="imageUploadZone">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drag & drop images or click to browse</p>
+                        <p class="upload-hint">Supported: JPG, PNG, WebP (max 5MB each)</p>
+                        <input type="file" id="imageInput" accept="image/*" multiple>
+                    </div>
+                    <div class="image-preview" id="imagePreview"></div>
+                </section>
+
+                <!-- Optional Video Reference -->
+                <section class="upload-section">
+                    <h2><i class="fas fa-video"></i> Optional Reference Video</h2>
+                    <div class="upload-zone" id="videoUploadZone">
+                        <i class="fas fa-video"></i>
+                        <p>Upload a video for style reference (optional)</p>
+                        <p class="upload-hint">MP4, WebM (max 50MB)</p>
+                        <input type="file" id="videoInput" accept="video/*">
+                    </div>
+                    <div class="video-preview" id="videoPreview"></div>
+                </section>
+
+                <!-- Prompt Section -->
+                <section class="prompt-section">
+                    <h2><i class="fas fa-keyboard"></i> Scene Description</h2>
+                    <div class="prompt-input">
+                        <textarea id="promptInput" placeholder="Describe your video scene in detail... 
+Example: 'A cinematic shot of a mountain landscape at sunrise with gentle camera movement from left to right, birds flying across the sky, and mist rising from the valleys.'" rows="4"></textarea>
+                        <div class="prompt-tools">
+                            <button class="tool-btn" id="promptSuggest"><i class="fas fa-lightbulb"></i> Suggest</button>
+                            <span class="char-count">0/500</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Video Settings -->
+                <section class="settings-section">
+                    <h2><i class="fas fa-sliders-h"></i> Video Settings</h2>
+                    <div class="settings-grid">
+                        <div class="setting-group">
+                            <label for="duration"><i class="fas fa-clock"></i> Duration</label>
+                            <select id="duration">
+                                <option value="5">5 seconds</option>
+                                <option value="10" selected>10 seconds</option>
+                                <option value="15">15 seconds</option>
+                                <option value="30">30 seconds</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label for="aspectRatio"><i class="fas fa-expand"></i> Aspect Ratio</label>
+                            <select id="aspectRatio">
+                                <option value="9:16">9:16 (Vertical)</option>
+                                <option value="16:9" selected>16:9 (Widescreen)</option>
+                                <option value="1:1">1:1 (Square)</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label for="quality"><i class="fas fa-hd"></i> Quality</label>
+                            <select id="quality">
+                                <option value="720">720p</option>
+                                <option value="1080" selected>1080p</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label for="fps"><i class="fas fa-tachometer-alt"></i> FPS</label>
+                            <select id="fps">
+                                <option value="24">24 fps (Cinematic)</option>
+                                <option value="30" selected>30 fps (Standard)</option>
+                                <option value="60">60 fps (Smooth)</option>
+                            </select>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Generate Button -->
+                <button class="generate-btn" id="generateBtn">
+                    <i class="fas fa-magic"></i> Generate AI Video
+                </button>
+            </div>
+
+            <!-- Right Panel - Preview & Output -->
+            <div class="preview-panel">
+                <!-- Progress Section -->
+                <div class="progress-section hidden" id="progressSection">
+                    <h2><i class="fas fa-spinner fa-spin"></i> Generating Video</h2>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <div class="progress-text" id="progressText">Initializing...</div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="step active">
+                            <span class="step-icon">1</span>
+                            <span class="step-label">Processing Images</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-icon">2</span>
+                            <span class="step-label">Generating Motion</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-icon">3</span>
+                            <span class="step-label">Adding Sound Effects</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-icon">4</span>
+                            <span class="step-label">Syncing Music</span>
+                        </div>
+                        <div class="step">
+                            <span class="step-icon">5</span>
+                            <span class="step-label">Final Rendering</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Output Section -->
+                <div class="output-section" id="outputSection">
+                    <h2><i class="fas fa-play-circle"></i> Generated Video</h2>
+                    <div class="video-container">
+                        <div class="video-placeholder" id="videoPlaceholder">
+                            <i class="fas fa-film"></i>
+                            <p>Your AI-generated video will appear here</p>
+                        </div>
+                        <video class="hidden" id="generatedVideo" controls></video>
+                    </div>
+                    
+                    <div class="video-info hidden" id="videoInfo">
+                        <div class="info-row">
+                            <span class="info-label">Duration:</span>
+                            <span class="info-value" id="infoDuration">10s</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Resolution:</span>
+                            <span class="info-value" id="infoResolution">1920x1080</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">FPS:</span>
+                            <span class="info-value" id="infoFPS">30</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">File Size:</span>
+                            <span class="info-value" id="infoSize">15.2 MB</span>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons hidden" id="actionButtons">
+                        <button class="action-btn download-btn" id="downloadBtn">
+                            <i class="fas fa-download"></i> Download Video
+                        </button>
+                        <button class="action-btn share-btn" id="shareBtn">
+                            <i class="fas fa-share-alt"></i> Share
+                        </button>
+                        <button class="action-btn regenerate-btn" id="regenerateBtn">
+                            <i class="fas fa-redo"></i> Regenerate
+                        </button>
+                    </div>
+
+                    <!-- Generation Details -->
+                    <div class="details-section">
+                        <h3>Generation Details</h3>
+                        <div class="details-content">
+                            <p><strong>Prompt:</strong> <span id="detailPrompt">No prompt entered</span></p>
+                            <p><strong>Images Used:</strong> <span id="detailImages">0 images</span></p>
+                            <p><strong>Reference Video:</strong> <span id="detailReference">None</span></p>
+                            <p><strong>AI Model:</strong> <span id="detailModel">Cinematic-Diffusion v2.1</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>FlowAI Video Generator • Powered by AI • <span id="apiStatus" class="api-status online"><i class="fas fa-circle"></i> AI Services Online</span></p>
+            <p class="disclaimer">This is a demonstration tool. Real AI APIs would be integrated in production.</p>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
